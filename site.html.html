@@ -45,23 +45,17 @@
     <button onclick="loadSite('https://www.wikipedia.org')">Wikipedia</button>
     <button onclick="loadSite('https://www.example.com')">Example</button>
     <button onclick="loadSite('https://www.duckduckgo.com')">DuckDuckGo</button>
-    <button onclick="loadSite('https://www.google.com')">Google</button>
   </div>
 
-  <iframe id="browserFrame" src="about:blank"></iframe>
+  <iframe id="browserFrame" src=""></iframe>
 
   <script>
-    // 👇 This is your Replit proxy URL — make sure it's correct!
     const proxyBase = "https://galaxyhub.onrender.com/proxy?url=";
 
-
     function loadSite(url) {
-      const iframe = document.getElementById("browserFrame");
-      window.open(url, "_blank");
-
+      const frame = document.getElementById("browserFrame");
+      frame.src = proxyBase + encodeURIComponent(url);
     }
   </script>
 </body>
 </html>
-
-
