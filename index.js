@@ -1,48 +1,44 @@
 import express from "express";
+import path from "path";
 import fetch from "node-fetch";
-import cors from "cors";
+import { fileURLToPath } from "url";
 
 const app = express();
-const PORT = process.env.PORT || 5000;
+const port = process.env.PORT || 3000;
 
-app.use(cors());
+// Get the current directory name (for ES module support)
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
-// Home route
+// Serve site.html at the root ("/")
 app.get("/", (req, res) => {
-  res.send("🚀 GalaxyHub Proxy is running!");
+  res.sendFile(path.join(__dirname, "site.html"));
 });
 
-// Proxy route
+// --- Proxy Setup ---
 app.get("/proxy", async (req, res) => {
-  const targetUrl = req.query.url;
-  if (!targetUrl) return res.status(400).send("Missing URL parameter");
+  const url = req.query.url;
+
+  if (!url) {
+    return res.status(400).send("Missing ?url parameter");
+  }
 
   try {
-    const response = await fetch(targetUrl, {
-      headers: {
-        "User-Agent":
-          "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/118.0 Safari/537.36",
-      },
+    const response = await fetch(url, {
+      headers: { "User-Agent": "Mozilla/5.0" },
     });
 
-    let body = await response.text();
+    const contentType = response.headers.get("content-type");
+    res.setHeader("Content-Type", contentType || "text/html");
 
-    // 🧩 Remove headers that block embedding
-    res.set("Access-Control-Allow-Origin", "*");
-    res.set("X-Frame-Options", "ALLOWALL");
-    res.set("Content-Security-Policy", "frame-ancestors *");
-    res.set("Content-Type", "text/html");
-
-    // 🧠 Optional: fix absolute URLs to go through your proxy
-    body = body.replace(/href="https?:\/\//g, `href="/proxy?url=https://`);
-    body = body.replace(/src="https?:\/\//g, `src="/proxy?url=https://`);
-
+    const body = await response.text();
     res.send(body);
   } catch (err) {
-    res.status(500).send("Proxy error: " + err.message);
+    console.error("Proxy error:", err);
+    res.status(500).send("Error fetching the requested URL.");
   }
 });
 
-app.listen(PORT, () => {
-  console.log(`✅ GalaxyHub Proxy running on port ${PORT}`);
+app.listen(port, () => {
+  console.log(`GalaxyHub running on port ${port}`);
 });
