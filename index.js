@@ -1,44 +1,41 @@
 import express from "express";
-import path from "path";
 import fetch from "node-fetch";
-import { fileURLToPath } from "url";
+import cors from "cors";
 
 const app = express();
-const port = process.env.PORT || 3000;
+const PORT = process.env.PORT || 5000;
 
-// Get the current directory name (for ES module support)
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+app.use(cors());
+app.use(express.static("public"));
 
-// Serve site.html at the root ("/")
+// Homepage
 app.get("/", (req, res) => {
-  res.sendFile(path.join(__dirname, "site.html"));
+  res.sendFile(process.cwd() + "/public/site.html");
 });
 
-// --- Proxy Setup ---
+// Proxy route
 app.get("/proxy", async (req, res) => {
-  const url = req.query.url;
-
-  if (!url) {
-    return res.status(400).send("Missing ?url parameter");
-  }
+  const targetUrl = req.query.url;
+  if (!targetUrl) return res.status(400).send("Missing URL parameter");
 
   try {
-    const response = await fetch(url, {
-      headers: { "User-Agent": "Mozilla/5.0" },
+    const response = await fetch(targetUrl, {
+      headers: {
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)",
+      },
     });
 
-    const contentType = response.headers.get("content-type");
-    res.setHeader("Content-Type", contentType || "text/html");
+    res.set("Access-Control-Allow-Origin", "*");
+    res.set("X-Frame-Options", "ALLOWALL");
+    res.set("Content-Type", response.headers.get("content-type") || "text/html");
 
     const body = await response.text();
     res.send(body);
   } catch (err) {
-    console.error("Proxy error:", err);
-    res.status(500).send("Error fetching the requested URL.");
+    res.status(500).send("Proxy error: " + err.message);
   }
 });
 
-app.listen(port, () => {
-  console.log(`GalaxyHub running on port ${port}`);
+app.listen(PORT, () => {
+  console.log(`✅ GalaxyHub Proxy running on port ${PORT}`);
 });
