@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>GalaxyHub</title>
+  <style>
+    body {
+      margin: 0;
+      display: flex;
+      font-family: Arial, sans-serif;
+      background-color: #0a0a0a;
+      color: white;
+    }
+    .sidebar {
+      width: 200px;
+      background: #111;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      padding: 20px;
+    }
+    .sidebar button {
+      background: #222;
+      border: none;
+      color: white;
+      padding: 10px;
+      margin-bottom: 10px;
+      cursor: pointer;
+      border-radius: 5px;
+    }
+    .sidebar button:hover {
+      background: #333;
+    }
+    iframe {
+      flex-grow: 1;
+      height: 100vh;
+      border: none;
+    }
+  </style>
+</head>
+<body>
+  <div class="sidebar">
+    <button onclick="loadSite('https://www.wikipedia.org')">Wikipedia</button>
+    <button onclick="loadSite('https://www.example.com')">Example</button>
+    <button onclick="loadSite('https://www.duckduckgo.com')">DuckDuckGo</button>
+  </div>
+
+  <iframe id="browserFrame" src="about:blank"></iframe>
+
+  <script>
+    const proxyBase = "https://nodejs-randmyles2.replit.app/proxy?url=";
+
+    function loadSite(url) {
+      document.getElementById("browserFrame").src = proxyBase + encodeURIComponent(url);
+    }
+  </script>
+</body>
+</html>
