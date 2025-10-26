@@ -1,143 +1,130 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>GalaxyHub Browser</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GalaxyHub</title>
   <style>
     body {
-      margin: 0;
-      font-family: "Poppins", sans-serif;
-      background: radial-gradient(circle at top left, #0d0b2e, #000);
+      background-color: #0a0a0a;
       color: white;
+      font-family: "Poppins", sans-serif;
+      margin: 0;
+      padding: 0;
       display: flex;
       flex-direction: column;
-      height: 100vh;
-      overflow: hidden;
+      align-items: center;
+      min-height: 100vh;
     }
 
     header {
+      background-color: #1a1a1a;
+      width: 100%;
+      text-align: center;
+      padding: 1rem;
+      font-size: 1.5rem;
+      font-weight: 600;
+      color: #00b3ff;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.5);
+    }
+
+    main {
+      flex: 1;
+      width: 90%;
+      max-width: 900px;
       display: flex;
+      flex-direction: column;
       align-items: center;
-      background: rgba(255, 255, 255, 0.05);
-      backdrop-filter: blur(8px);
-      padding: 10px;
-      gap: 8px;
+      margin-top: 2rem;
+    }
+
+    input[type="text"] {
+      width: 80%;
+      padding: 0.8rem;
+      font-size: 1rem;
+      border-radius: 8px;
+      border: none;
+      outline: none;
+      margin-bottom: 1rem;
     }
 
     button {
-      background: rgba(255, 255, 255, 0.1);
+      background-color: #00b3ff;
       border: none;
       color: white;
-      padding: 6px 10px;
-      border-radius: 6px;
+      padding: 0.8rem 1.2rem;
+      border-radius: 8px;
+      font-size: 1rem;
       cursor: pointer;
-      transition: 0.2s;
+      transition: background 0.3s;
+      margin: 0.3rem;
     }
 
     button:hover {
-      background: rgba(255, 255, 255, 0.2);
-    }
-
-    input {
-      flex: 1;
-      padding: 8px;
-      border: none;
-      border-radius: 6px;
-      outline: none;
-      background: rgba(255, 255, 255, 0.1);
-      color: white;
+      background-color: #0095d9;
     }
 
     iframe {
-      flex: 1;
-      border: none;
       width: 100%;
-      background: #111;
-    }
-
-    .bookmarks {
-      display: flex;
-      gap: 10px;
-      padding: 10px;
-      background: rgba(255, 255, 255, 0.03);
-      overflow-x: auto;
-    }
-
-    .bookmarks button {
-      flex-shrink: 0;
-      padding: 8px 12px;
+      height: 80vh;
+      border: none;
+      margin-top: 1rem;
+      border-radius: 12px;
     }
 
     footer {
+      background-color: #1a1a1a;
+      width: 100%;
       text-align: center;
-      font-size: 12px;
-      padding: 5px;
-      background: rgba(255, 255, 255, 0.05);
+      padding: 0.8rem;
+      font-size: 0.9rem;
+      color: gray;
     }
   </style>
 </head>
 <body>
-  <header>
-    <button onclick="goBack()">⟨</button>
-    <button onclick="goForward()">⟩</button>
-    <button onclick="refresh()">⟳</button>
-    <input id="url" placeholder="Enter a website..." onkeydown="if(event.key==='Enter') loadSite()" />
-    <button onclick="loadSite()">Go</button>
-  </header>
+  <header>🚀 GalaxyHub</header>
 
-  <div class="bookmarks">
-    <button onclick="loadSite('https://www.duckduckgo.com')">DuckDuckGo</button>
-    <button onclick="loadSite('https://www.wikipedia.org')">Wikipedia</button>
-    <button onclick="loadSite('https://www.roblox.com')">Roblox</button>
-    <button onclick="loadSite('https://www.youtube.com')">YouTube</button>
-  </div>
+  <main>
+    <input type="text" id="siteInput" placeholder="Enter a website or search something...">
+    <div>
+      <button onclick="loadSite()">Open</button>
+      <button onclick="loadInNewTab()">Open in New Tab</button>
+    </div>
+    <iframe id="siteFrame" src=""></iframe>
+  </main>
 
-  <iframe id="browser"></iframe>
-
-  <footer>🚀 GalaxyHub Browser — powered by your proxy</footer>
+  <footer>GalaxyHub © 2025</footer>
 
   <script>
-    const proxyBase = "https://nodejs-randmyles2.replit.app/proxy?url=";
-    const iframe = document.getElementById("browser");
-    const input = document.getElementById("url");
-    const historyStack = [];
-    let historyIndex = -1;
-
-    function loadSite(url) {
-      if (!url) url = input.value;
-      if (!url.startsWith("http")) url = "https://" + url;
-
-      iframe.src = proxyBase + encodeURIComponent(url);
-      input.value = url;
-
-      // Save to history
-      if (historyIndex === -1 || historyStack[historyIndex] !== url) {
-        historyStack.push(url);
-        historyIndex = historyStack.length - 1;
+    function formatURL(input) {
+      // If user types "google.com" or similar, add https://
+      if (!input.startsWith("http://") && !input.startsWith("https://")) {
+        if (input.includes("."))
+          return "https://" + input;
+        else
+          // Default to DuckDuckGo search if no domain
+          return "https://duckduckgo.com/?q=" + encodeURIComponent(input);
       }
+      return input;
     }
 
-    function goBack() {
-      if (historyIndex > 0) {
-        historyIndex--;
-        const prevUrl = historyStack[historyIndex];
-        input.value = prevUrl;
-        iframe.src = proxyBase + encodeURIComponent(prevUrl);
-      }
+    function loadSite() {
+      const input = document.getElementById("siteInput").value.trim();
+      if (!input) return alert("Please enter a website or search query.");
+
+      const url = formatURL(input);
+      const proxyURL = `/proxy?url=${encodeURIComponent(url)}`;
+      document.getElementById("siteFrame").src = proxyURL;
     }
 
-    function goForward() {
-      if (historyIndex < historyStack.length - 1) {
-        historyIndex++;
-        const nextUrl = historyStack[historyIndex];
-        input.value = nextUrl;
-        iframe.src = proxyBase + encodeURIComponent(nextUrl);
-      }
-    }
+    function loadInNewTab() {
+      const input = document.getElementById("siteInput").value.trim();
+      if (!input) return alert("Please enter a website or search query.");
 
-    function refresh() {
-      if (iframe.src) iframe.src = iframe.src;
+      const url = formatURL(input);
+      const proxyURL = `${window.location.origin}/proxy?url=${encodeURIComponent(url)}`;
+      window.open(proxyURL, "_blank");
     }
   </script>
 </body>
