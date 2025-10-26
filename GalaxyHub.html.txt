@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🌌 GalaxyHub</title>
+<style>
+/* Background + Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap');
+* { box-sizing: border-box; font-family: 'Poppins', sans-serif; }
+
+body {
+  margin: 0;
+  background: radial-gradient(circle at top, #09111e, #000);
+  color: #fff;
+  height: 100vh;
+  overflow: hidden;
+  display: flex;
+}
+
+/* Sidebar */
+.sidebar {
+  width: 240px;
+  background: rgba(20, 20, 40, 0.85);
+  backdrop-filter: blur(10px);
+  border-right: 2px solid #0ff3;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.sidebar h1 {
+  color: #00ffff;
+  font-size: 22px;
+  margin-bottom: 30px;
+  text-shadow: 0 0 10px #0ff;
+}
+.sidebar button {
+  width: 100%;
+  margin: 6px 0;
+  padding: 12px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid #0ff5;
+  color: #0ff;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: 0.2s;
+}
+.sidebar button:hover {
+  background: #0ff;
+  color: #000;
+  transform: scale(1.05);
+}
+
+/* Main Section */
+.main {
+  flex: 1;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Search Bar */
+.search-bar {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+.search-bar input {
+  flex: 1;
+  padding: 10px 15px;
+  border: none;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.1);
+  color: #0ff;
+  font-size: 16px;
+  outline: none;
+}
+.search-bar button {
+  background: #0ff;
+  color: #000;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 8px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: 0.2s;
+}
+.search-bar button:hover {
+  background: #00ffaa;
+}
+
+/* Grid of Apps */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 20px;
+  overflow-y: auto;
+  padding-right: 10px;
+}
+.card {
+  background: rgba(255, 255, 255, 0.07);
+  border: 1px solid #0ff3;
+  border-radius: 14px;
+  text-align: center;
+  padding: 20px;
+  transition: 0.25s;
+  cursor: pointer;
+  box-shadow: 0 0 10px transparent;
+}
+.card:hover {
+  transform: scale(1.08);
+  border-color: #0ff;
+  box-shadow: 0 0 20px #0ff6;
+}
+.card img {
+  width: 50px;
+  height: 50px;
+  border-radius: 8px;
+  margin-bottom: 10px;
+}
+.card h3 {
+  margin: 5px 0 0 0;
+  font-size: 16px;
+  color: #0ff;
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar { width: 8px; }
+::-webkit-scrollbar-thumb {
+  background: #0ff5;
+  border-radius: 10px;
+}
+</style>
+</head>
+<body>
+
+<!-- Sidebar -->
+<div class="sidebar">
+  <h1>🚀 GalaxyHub</h1>
+  <button onclick="openSite('https://www.google.com')">🔎 Google</button>
+  <button onclick="openSite('https://www.youtube.com')">▶ YouTube</button>
+  <button onclick="openSite('https://www.wikipedia.org')">📚 Wikipedia</button>
+  <button onclick="openSite('https://www.reddit.com')">💬 Reddit</button>
+  <button onclick="openSite('https://www.twitch.tv')">🎮 Twitch</button>
+  <hr style="width:100%; border:1px solid #0ff5; margin:15px 0;">
+  <button onclick="openSite('https://1v1.lol')">⚔️ 1v1.lol</button>
+  <button onclick="openSite('https://krunker.io')">🔫 Krunker</button>
+  <button onclick="openSite('https://shellshock.io')">🥚 Shell Shockers</button>
+  <button onclick="openSite('https://slither.io')">🐍 Slither.io</button>
+  <button onclick="openSite('https://paper-io.com')">📄 Paper.io</button>
+  <button onclick="openSite('https://agar.io')">🦠 Agar.io</button>
+</div>
+
+<!-- Main -->
+<div class="main">
+  <div class="search-bar">
+    <input type="text" id="searchInput" placeholder="Search the web...">
+    <button onclick="search()">Search</button>
+  </div>
+
+  <div class="grid">
+    <div class="card" onclick="openSite('https://discord.com/app')">
+      <img src="https://cdn-icons-png.flaticon.com/512/5968/5968756.png"><h3>Discord</h3>
+    </div>
+    <div class="card" onclick="openSite('https://open.spotify.com')">
+      <img src="https://cdn-icons-png.flaticon.com/512/174/174872.png"><h3>Spotify</h3>
+    </div>
+    <div class="card" onclick="openSite('https://www.netflix.com')">
+      <img src="https://cdn-icons-png.flaticon.com/512/5977/5977590.png"><h3>Netflix</h3>
+    </div>
+    <div class="card" onclick="openSite('https://www.roblox.com')">
+      <img src="https://upload.wikimedia.org/wikipedia/commons/6/6c/Roblox_Logo_2022.svg" style="width:50px;height:50px;background:#fff;border-radius:10px;"><h3>Roblox</h3>
+    </div>
+    <div class="card" onclick="openSite('https://store.epicgames.com')">
+      <img src="https://upload.wikimedia.org/wikipedia/commons/3/31/Epic_Games_logo.svg" style="width:50px;height:50px;background:#fff;border-radius:10px;"><h3>Epic Games</h3>
+    </div>
+    <div class="card" onclick="openSite('https://github.com')">
+      <img src="https://cdn-icons-png.flaticon.com/512/733/733553.png"><h3>GitHub</h3>
+    </div>
+  </div>
+</div>
+
+<script>
+function openSite(url) {
+  window.open(url, '_blank');
+}
+function search() {
+  const q = document.getElementById('searchInput').value.trim();
+  if (q) window.open('https://www.google.com/search?q=' + encodeURIComponent(q), '_blank');
+}
+</script>
+</body>
+</html>
