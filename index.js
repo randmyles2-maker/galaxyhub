@@ -1,54 +1,48 @@
 import express from "express";
 import fetch from "node-fetch";
-import cors from "cors";
+import path from "path";
+import { fileURLToPath } from "url";
 
 const app = express();
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 3000;
 
-app.use(cors());
+// Setup file path utilities
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
-// Home route
+// Serve static files (like site.html)
+app.use(express.static(__dirname));
+
+// ✅ Route to serve site.html
 app.get("/", (req, res) => {
-  res.send("🚀 GalaxyHub Proxy is running!");
+  res.sendFile(path.join(__dirname, "site.html"));
 });
 
-// Proxy route
+// ✅ Proxy route
 app.get("/proxy", async (req, res) => {
   const targetUrl = req.query.url;
-  if (!targetUrl) return res.status(400).send("Missing URL parameter");
+  if (!targetUrl) {
+    return res.status(400).send("Missing ?url parameter");
+  }
 
   try {
     const response = await fetch(targetUrl, {
-      headers: { "User-Agent": "Mozilla/5.0" },
+      headers: { "User-Agent": "Mozilla/5.0" }
     });
 
-    // Copy headers except frame-blocking ones
-    const headers = {};
-    for (const [key, value] of response.headers.entries()) {
-      if (
-        !["x-frame-options", "content-security-policy"].includes(
-          key.toLowerCase()
-        )
-      ) {
-        headers[key] = value;
-      }
+    const contentType = response.headers.get("content-type");
+    if (contentType) {
+      res.setHeader("Content-Type", contentType);
     }
-
-    // Allow embedding and CORS
-    res.set({
-      ...headers,
-      "Access-Control-Allow-Origin": "*",
-      "X-Frame-Options": "ALLOWALL",
-      "Content-Security-Policy": "",
-    });
 
     const body = await response.text();
     res.send(body);
   } catch (err) {
-    res.status(500).send("Proxy error: " + err.message);
+    console.error("Proxy Error:", err);
+    res.status(500).send("Proxy Error: " + err.message);
   }
 });
 
 app.listen(PORT, () => {
-  console.log(`✅ GalaxyHub Proxy running on port ${PORT}`);
+  console.log(`🚀 GalaxyHub Proxy running on port ${PORT}`);
 });
