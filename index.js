@@ -7,7 +7,7 @@ const PORT = process.env.PORT || 5000;
 
 app.use(cors());
 
-// Simple homepage
+// Root endpoint
 app.get("/", (req, res) => {
   res.send("🚀 GalaxyHub Proxy is running!");
 });
@@ -23,18 +23,29 @@ app.get("/proxy", async (req, res) => {
   try {
     const response = await fetch(targetUrl, {
       headers: {
-        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)",
+        "User-Agent":
+          "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.0.0 Safari/537.36",
+        "Accept":
+          "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8",
+        "Accept-Language": "en-US,en;q=0.9",
+        "Referer": "https://www.google.com/",
+        "Connection": "keep-alive",
+        "Upgrade-Insecure-Requests": "1",
       },
     });
 
-    // copy headers but allow embedding
+    // Copy headers but allow embedding
     res.set("Access-Control-Allow-Origin", "*");
     res.set("X-Frame-Options", "ALLOWALL");
-    res.set("Content-Type", response.headers.get("content-type") || "text/html");
+    res.set(
+      "Content-Type",
+      response.headers.get("content-type") || "text/html"
+    );
 
     const body = await response.text();
     res.send(body);
   } catch (err) {
+    console.error("Proxy error:", err);
     res.status(500).send("Proxy error: " + err.message);
   }
 });
