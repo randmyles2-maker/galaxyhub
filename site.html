@@ -1,73 +1,130 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>GalaxyHub 🌌</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GalaxyHub</title>
   <style>
     body {
-      margin: 0;
-      font-family: 'Segoe UI', sans-serif;
       background-color: #0a0a0a;
-      color: #fff;
-      display: flex;
-      height: 100vh;
-    }
-
-    .sidebar {
-      width: 220px;
-      background: #111;
-      border-right: 2px solid #333;
-      padding: 20px;
+      color: white;
+      font-family: "Poppins", sans-serif;
+      margin: 0;
+      padding: 0;
       display: flex;
       flex-direction: column;
+      align-items: center;
+      min-height: 100vh;
     }
 
-    .sidebar h2 {
+    header {
+      background-color: #1a1a1a;
+      width: 100%;
       text-align: center;
-      margin-bottom: 20px;
-      color: #0ff;
+      padding: 1rem;
+      font-size: 1.5rem;
+      font-weight: 600;
+      color: #00b3ff;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.5);
     }
 
-    .sidebar button {
-      background: #222;
-      border: 1px solid #0ff;
-      color: #0ff;
-      padding: 10px;
-      margin: 5px 0;
-      cursor: pointer;
+    main {
+      flex: 1;
+      width: 90%;
+      max-width: 900px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin-top: 2rem;
+    }
+
+    input[type="text"] {
+      width: 80%;
+      padding: 0.8rem;
+      font-size: 1rem;
       border-radius: 8px;
-      transition: 0.2s;
+      border: none;
+      outline: none;
+      margin-bottom: 1rem;
     }
 
-    .sidebar button:hover {
-      background: #0ff;
-      color: #111;
+    button {
+      background-color: #00b3ff;
+      border: none;
+      color: white;
+      padding: 0.8rem 1.2rem;
+      border-radius: 8px;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: background 0.3s;
+      margin: 0.3rem;
+    }
+
+    button:hover {
+      background-color: #0095d9;
     }
 
     iframe {
-      flex-grow: 1;
-      border: none;
       width: 100%;
-      height: 100%;
+      height: 80vh;
+      border: none;
+      margin-top: 1rem;
+      border-radius: 12px;
+    }
+
+    footer {
+      background-color: #1a1a1a;
+      width: 100%;
+      text-align: center;
+      padding: 0.8rem;
+      font-size: 0.9rem;
+      color: gray;
     }
   </style>
 </head>
 <body>
-  <div class="sidebar">
-    <h2>GalaxyHub</h2>
-    <button onclick="loadSite('https://duckduckgo.com')">DuckDuckGo</button>
-    <button onclick="loadSite('https://www.wikipedia.org')">Wikipedia</button>
-    <button onclick="loadSite('https://example.com')">Example</button>
-  </div>
+  <header>🚀 GalaxyHub</header>
 
-  <iframe id="viewer" src=""></iframe>
+  <main>
+    <input type="text" id="siteInput" placeholder="Enter a website or search something...">
+    <div>
+      <button onclick="loadSite()">Open</button>
+      <button onclick="loadInNewTab()">Open in New Tab</button>
+    </div>
+    <iframe id="siteFrame" src=""></iframe>
+  </main>
+
+  <footer>GalaxyHub © 2025</footer>
 
   <script>
-    const viewer = document.getElementById("viewer");
+    function formatURL(input) {
+      // If user types "google.com" or similar, add https://
+      if (!input.startsWith("http://") && !input.startsWith("https://")) {
+        if (input.includes("."))
+          return "https://" + input;
+        else
+          // Default to DuckDuckGo search if no domain
+          return "https://duckduckgo.com/?q=" + encodeURIComponent(input);
+      }
+      return input;
+    }
 
-    function loadSite(url) {
-      viewer.src = `/proxy?url=${encodeURIComponent(url)}`;
+    function loadSite() {
+      const input = document.getElementById("siteInput").value.trim();
+      if (!input) return alert("Please enter a website or search query.");
+
+      const url = formatURL(input);
+      const proxyURL = `/proxy?url=${encodeURIComponent(url)}`;
+      document.getElementById("siteFrame").src = proxyURL;
+    }
+
+    function loadInNewTab() {
+      const input = document.getElementById("siteInput").value.trim();
+      if (!input) return alert("Please enter a website or search query.");
+
+      const url = formatURL(input);
+      const proxyURL = `${window.location.origin}/proxy?url=${encodeURIComponent(url)}`;
+      window.open(proxyURL, "_blank");
     }
   </script>
 </body>
