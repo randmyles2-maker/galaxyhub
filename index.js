@@ -7,7 +7,7 @@ const PORT = process.env.PORT || 5000;
 
 app.use(cors());
 
-// Root endpoint
+// Home route
 app.get("/", (req, res) => {
   res.send("🚀 GalaxyHub Proxy is running!");
 });
@@ -15,37 +15,30 @@ app.get("/", (req, res) => {
 // Proxy route
 app.get("/proxy", async (req, res) => {
   const targetUrl = req.query.url;
-
-  if (!targetUrl) {
-    return res.status(400).send("Missing URL parameter");
-  }
+  if (!targetUrl) return res.status(400).send("Missing URL parameter");
 
   try {
     const response = await fetch(targetUrl, {
       headers: {
         "User-Agent":
-          "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.0.0 Safari/537.36",
-        "Accept":
-          "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8",
-        "Accept-Language": "en-US,en;q=0.9",
-        "Referer": "https://www.google.com/",
-        "Connection": "keep-alive",
-        "Upgrade-Insecure-Requests": "1",
+          "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/118.0 Safari/537.36",
       },
     });
 
-    // Copy headers but allow embedding
+    let body = await response.text();
+
+    // 🧩 Remove headers that block embedding
     res.set("Access-Control-Allow-Origin", "*");
     res.set("X-Frame-Options", "ALLOWALL");
-    res.set(
-      "Content-Type",
-      response.headers.get("content-type") || "text/html"
-    );
+    res.set("Content-Security-Policy", "frame-ancestors *");
+    res.set("Content-Type", "text/html");
 
-    const body = await response.text();
+    // 🧠 Optional: fix absolute URLs to go through your proxy
+    body = body.replace(/href="https?:\/\//g, `href="/proxy?url=https://`);
+    body = body.replace(/src="https?:\/\//g, `src="/proxy?url=https://`);
+
     res.send(body);
   } catch (err) {
-    console.error("Proxy error:", err);
     res.status(500).send("Proxy error: " + err.message);
   }
 });
