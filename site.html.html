@@ -32,11 +32,6 @@
     .sidebar button:hover {
       background: #333;
     }
-    iframe {
-      flex-grow: 1;
-      height: 100vh;
-      border: none;
-    }
   </style>
 </head>
 <body>
@@ -46,13 +41,11 @@
     <button onclick="loadSite('https://www.duckduckgo.com')">DuckDuckGo</button>
   </div>
 
-  <iframe id="browserFrame" src="about:blank"></iframe>
-
   <script>
     const proxyBase = "https://nodejs-randmyles2.replit.app/proxy?url=";
 
     function loadSite(url) {
-      document.getElementById("browserFrame").src = proxyBase + encodeURIComponent(url);
+      window.location.href = proxyBase + encodeURIComponent(url);
     }
   </script>
 </body>
