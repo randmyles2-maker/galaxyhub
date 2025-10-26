@@ -56,8 +56,10 @@
 
     function loadSite(url) {
       const iframe = document.getElementById("browserFrame");
-      iframe.src = proxyBase + encodeURIComponent(url);
+      window.open(url, "_blank");
+
     }
   </script>
 </body>
 </html>
+
