@@ -46,6 +46,12 @@
       border: none;
       outline: none;
       margin-bottom: 1rem;
+      background: #111;
+      color: white;
+    }
+
+    .controls {
+      margin-bottom: 0.6rem;
     }
 
     button {
@@ -70,7 +76,7 @@
       border: none;
       margin-top: 1rem;
       border-radius: 12px;
-      background: #121212;
+      background: white;
     }
 
     footer {
@@ -88,7 +94,7 @@
 
   <main>
     <input type="text" id="siteInput" placeholder="Enter a website or search something...">
-    <div>
+    <div class="controls">
       <button onclick="loadSite()">Open</button>
       <button onclick="loadInNewTab()">Open in New Tab</button>
     </div>
@@ -98,41 +104,58 @@
   <footer>GalaxyHub © 2025</footer>
 
   <script>
+    // Use your proxy endpoint (served by your Render/Express app)
+    // Keep it as a relative path so it works both on Render and locally if served.
+    const proxyPrefix = "/proxy?url=";
+
     function formatURL(input) {
-      if (!input.startsWith("http://") && !input.startsWith("https://")) {
-        if (input.includes("."))
-          return "https://" + input;
-        else
-          return "https://duckduckgo.com/?q=" + encodeURIComponent(input);
+      input = input.trim();
+      if (!input) return "";
+
+      // If the user entered something that looks like a domain (contains a dot),
+      // ensure it includes protocol.
+      if (input.includes(".") && !input.startsWith("http://") && !input.startsWith("https://")) {
+        return "https://" + input;
       }
+
+      // If no dot and not a URL, treat it as a DuckDuckGo search query
+      if (!input.includes(".")) {
+        return "https://duckduckgo.com/?q=" + encodeURIComponent(input);
+      }
+
+      // If it already starts with http(s), return as-is
       return input;
     }
 
     function loadSite() {
-      const input = document.getElementById("siteInput").value.trim();
-      if (!input) return alert("Please enter a website or search query.");
-
-      const url = formatURL(input);
-
-      // Sites that block being embedded in iframes
-      const blockedSites = ["youtube.com", "google.com", "tiktok.com", "discord.com", "instagram.com"];
-      if (blockedSites.some(site => url.includes(site))) {
-        window.open(url, "_blank");
+      const raw = document.getElementById("siteInput").value;
+      if (!raw || !raw.trim()) {
+        alert("Please enter a website or a search query.");
         return;
       }
 
-      const proxyURL = `/proxy?url=${encodeURIComponent(url)}`;
-      document.getElementById("siteFrame").src = proxyURL;
+      const final = formatURL(raw);
+      // Route via your proxy endpoint
+      const proxied = proxyPrefix + encodeURIComponent(final);
+      document.getElementById("siteFrame").src = proxied;
     }
 
     function loadInNewTab() {
-      const input = document.getElementById("siteInput").value.trim();
-      if (!input) return alert("Please enter a website or search query.");
+      const raw = document.getElementById("siteInput").value;
+      if (!raw || !raw.trim()) {
+        alert("Please enter a website or a search query.");
+        return;
+      }
 
-      const url = formatURL(input);
-      const proxyURL = `${window.location.origin}/proxy?url=${encodeURIComponent(url)}`;
-      window.open(proxyURL, "_blank");
+      const final = formatURL(raw);
+      const proxied = window.location.origin + proxyPrefix + encodeURIComponent(final);
+      window.open(proxied, "_blank");
     }
+
+    // Allow Enter key to load
+    document.getElementById("siteInput").addEventListener("keydown", function(e) {
+      if (e.key === "Enter") loadSite();
+    });
   </script>
 </body>
 </html>
