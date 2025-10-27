@@ -1,0 +1,12 @@
+image: node:18
+
+pages:
+  script:
+    - mkdir .public
+    - cp -r site.html .public/index.html
+    - cp -r * .public/
+  artifacts:
+    paths:
+      - .public
+  only:
+    - main
