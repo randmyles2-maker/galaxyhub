@@ -98,14 +98,20 @@
 
   <script>
     function formatURL(input) {
-      // If user types "google.com" or similar, add https://
-      if (!input.startsWith("http://") && !input.startsWith("https://")) {
-        if (input.includes("."))
-          return "https://" + input;
-        else
-          // Default to DuckDuckGo search if no domain
-          return "https://duckduckgo.com/?q=" + encodeURIComponent(input);
+      input = input.trim();
+      if (!input) return "";
+
+      // Handle YouTube searches safely
+      if (!input.includes(".") && !input.startsWith("http")) {
+        // If it's not a URL, perform a DuckDuckGo search
+        return `https://duckduckgo.com/?q=${encodeURIComponent(input)}`;
       }
+
+      // If they typed "youtube.com" or similar, ensure it starts with https://
+      if (!input.startsWith("http://") && !input.startsWith("https://")) {
+        return "https://" + input;
+      }
+
       return input;
     }
 
@@ -114,8 +120,7 @@
       if (!input) return alert("Please enter a website or search query.");
 
       const url = formatURL(input);
-      const proxyURL = `/proxy?url=${encodeURIComponent(url)}`;
-      document.getElementById("siteFrame").src = proxyURL;
+      document.getElementById("siteFrame").src = url;
     }
 
     function loadInNewTab() {
@@ -123,8 +128,7 @@
       if (!input) return alert("Please enter a website or search query.");
 
       const url = formatURL(input);
-      const proxyURL = `${window.location.origin}/proxy?url=${encodeURIComponent(url)}`;
-      window.open(proxyURL, "_blank");
+      window.open(url, "_blank");
     }
   </script>
 </body>
