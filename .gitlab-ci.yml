@@ -1,12 +1,14 @@
-image: node:18
+image: alpine:latest
 
 pages:
+  stage: deploy
   script:
     - mkdir .public
-    - cp -r site.html .public/index.html
-    - cp -r * .public/
+    - cp -r * .public
+    - mv .public public
   artifacts:
     paths:
-      - .public
+      - public
   only:
     - main
+
