@@ -3,159 +3,73 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>GalaxyHub</title>
+  <title>GalaxyHub Viewer</title>
   <style>
     body {
+      margin: 0;
       background-color: #0a0a0a;
       color: white;
-      font-family: "Poppins", sans-serif;
-      margin: 0;
-      padding: 0;
+      font-family: Arial, sans-serif;
       display: flex;
       flex-direction: column;
-      align-items: center;
-      min-height: 100vh;
+      height: 100vh;
     }
-
     header {
-      background-color: #1a1a1a;
-      width: 100%;
-      text-align: center;
-      padding: 1rem;
-      font-size: 1.5rem;
-      font-weight: 600;
-      color: #00b3ff;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.5);
-    }
-
-    main {
-      flex: 1;
-      width: 90%;
-      max-width: 900px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      margin-top: 2rem;
-    }
-
-    input[type="text"] {
-      width: 80%;
-      padding: 0.8rem;
-      font-size: 1rem;
-      border-radius: 8px;
-      border: none;
-      outline: none;
-      margin-bottom: 1rem;
       background: #111;
+      padding: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid #222;
+    }
+    input {
+      width: 80%;
+      padding: 8px;
+      background: #222;
+      border: none;
+      border-radius: 5px;
       color: white;
     }
-
-    .controls {
-      margin-bottom: 0.6rem;
-    }
-
     button {
-      background-color: #00b3ff;
+      background: #00bfff;
       border: none;
+      padding: 8px 12px;
       color: white;
-      padding: 0.8rem 1.2rem;
-      border-radius: 8px;
-      font-size: 1rem;
+      border-radius: 5px;
       cursor: pointer;
-      transition: background 0.3s;
-      margin: 0.3rem;
     }
-
-    button:hover {
-      background-color: #0095d9;
-    }
-
     iframe {
-      width: 100%;
-      height: 80vh;
+      flex: 1;
       border: none;
-      margin-top: 1rem;
-      border-radius: 12px;
-      background: white;
-    }
-
-    footer {
-      background-color: #1a1a1a;
       width: 100%;
-      text-align: center;
-      padding: 0.8rem;
-      font-size: 0.9rem;
-      color: gray;
     }
   </style>
 </head>
 <body>
-  <header>🚀 GalaxyHub</header>
-
-  <main>
-    <input type="text" id="siteInput" placeholder="Enter a website or search something...">
-    <div class="controls">
-      <button onclick="loadSite()">Open</button>
-      <button onclick="loadInNewTab()">Open in New Tab</button>
-    </div>
-    <iframe id="siteFrame" src=""></iframe>
-  </main>
-
-  <footer>GalaxyHub © 2025</footer>
+  <header>
+    <input type="text" id="urlBox">
+    <button onclick="go()">Go</button>
+  </header>
+  <iframe id="viewer"></iframe>
 
   <script>
-    // Use your proxy endpoint (served by your Render/Express app)
-    // Keep it as a relative path so it works both on Render and locally if served.
-    const proxyPrefix = "/proxy?url=";
+    const params = new URLSearchParams(window.location.search);
+    const url = params.get('url');
+    const frame = document.getElementById('viewer');
+    const box = document.getElementById('urlBox');
 
-    function formatURL(input) {
-      input = input.trim();
-      if (!input) return "";
-
-      // If the user entered something that looks like a domain (contains a dot),
-      // ensure it includes protocol.
-      if (input.includes(".") && !input.startsWith("http://") && !input.startsWith("https://")) {
-        return "https://" + input;
-      }
-
-      // If no dot and not a URL, treat it as a DuckDuckGo search query
-      if (!input.includes(".")) {
-        return "https://duckduckgo.com/?q=" + encodeURIComponent(input);
-      }
-
-      // If it already starts with http(s), return as-is
-      return input;
+    if (url) {
+      box.value = url;
+      frame.src = url;
     }
 
-    function loadSite() {
-      const raw = document.getElementById("siteInput").value;
-      if (!raw || !raw.trim()) {
-        alert("Please enter a website or a search query.");
-        return;
+    function go() {
+      let newUrl = box.value.trim();
+      if (!newUrl.startsWith('http')) {
+        newUrl = 'https://' + newUrl;
       }
-
-      const final = formatURL(raw);
-      // Route via your proxy endpoint
-      const proxied = proxyPrefix + encodeURIComponent(final);
-      document.getElementById("siteFrame").src = proxied;
+      window.location.href = `sit.html?url=${encodeURIComponent(newUrl)}`;
     }
-
-    function loadInNewTab() {
-      const raw = document.getElementById("siteInput").value;
-      if (!raw || !raw.trim()) {
-        alert("Please enter a website or a search query.");
-        return;
-      }
-
-      const final = formatURL(raw);
-      const proxied = window.location.origin + proxyPrefix + encodeURIComponent(final);
-      window.open(proxied, "_blank");
-    }
-
-    // Allow Enter key to load
-    document.getElementById("siteInput").addEventListener("keydown", function(e) {
-      if (e.key === "Enter") loadSite();
-    });
   </script>
 </body>
 </html>
