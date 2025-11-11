@@ -86,8 +86,8 @@
     <h2>GalaxyHub</h2>
     <button onclick="loadSite('https://www.wikipedia.org')">Wikipedia</button>
     <button onclick="loadSite('https://www.duckduckgo.com')">DuckDuckGo</button>
-    <button onclick="loadSite('https://search.brave.com')">brave</button>
-    <button onclick="loadSite('https://gointerstellar.app/')">gointerstellar.app</button>
+    <button onclick="loadSite('https://example.com')">Example</button>
+    <button onclick="loadSite('https://scratch.mit.edu')">Scratch</button>
     <button onclick="loadSite('https://archive.org')">Archive.org</button>
   </div>
 
@@ -96,23 +96,31 @@
       <input id="urlInput" type="text" placeholder="Enter a website URL..." />
       <button onclick="browse()">Go</button>
     </div>
-    <iframe id="browserFrame" src="about:blank"></iframe>
+    <iframe id="browserFrame" src="https://www.google.com/webhp?igu=1"></iframe>
   </div>
 
   <script>
     const frame = document.getElementById('browserFrame');
     const input = document.getElementById('urlInput');
 
+    function formatURL(inputValue) {
+      if (!inputValue.includes('.') && !inputValue.startsWith('http')) {
+        return `https://www.google.com/search?q=${encodeURIComponent(inputValue)}`;
+      } else if (!inputValue.startsWith('http')) {
+        return `https://${inputValue}`;
+      }
+      return inputValue;
+    }
+
     function loadSite(url) {
-      frame.src = 'https://www.google.com/search?q=' + encodeURIComponent(url);
+      frame.src = url;
     }
 
     function browse() {
       let url = input.value.trim();
-      if (!url.startsWith('http')) {
-        url = 'https://www.google.com/search?q=' + encodeURIComponent(url);
-      }
-      frame.src = url;
+      if (!url) return alert('Please enter a website or search term.');
+      const formatted = formatURL(url);
+      frame.src = formatted;
     }
   </script>
 </body>
