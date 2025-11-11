@@ -85,7 +85,83 @@
   <div class="sidebar">
     <h2>GalaxyHub</h2>
     <button onclick="loadSite('https://www.wikipedia.org')">Wikipedia</button>
-    <button onclick="loadSite('https://www.duckduckgo.com')">DuckDuckGo</button>
+    <button onclick="loadSite('<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GalaxyHub Viewer</title>
+  <style>
+    body {
+      margin: 0;
+      background-color: #0a0a0a;
+      color: white;
+      font-family: Arial, sans-serif;
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+    }
+    header {
+      background: #111;
+      padding: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid #222;
+    }
+    input {
+      width: 80%;
+      padding: 8px;
+      background: #222;
+      border: none;
+      border-radius: 5px;
+      color: white;
+    }
+    button {
+      background: #00bfff;
+      border: none;
+      padding: 8px 12px;
+      color: white;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    iframe {
+      flex: 1;
+      border: none;
+      width: 100%;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <input type="text" id="urlBox">
+    <button onclick="go()">Go</button>
+  </header>
+  <iframe id="viewer"></iframe>
+
+  <script>
+    const params = new URLSearchParams(window.location.search);
+    const url = params.get('url');
+    const frame = document.getElementById('viewer');
+    const box = document.getElementById('urlBox');
+
+    if (url) {
+      box.value = url;
+      frame.src = url;
+    }
+
+    function go() {
+      let newUrl = box.value.trim();
+      if (!newUrl.startsWith('http')) {
+        newUrl = 'https://' + newUrl;
+      }
+      window.location.href = `sit.html?url=${encodeURIComponent(newUrl)}`;
+    }
+  </script>
+</body>
+</html>
+
+')">Brave</button>
     <button onclick="loadSite('https://example.com')">Example</button>
     <button onclick="loadSite('https://scratch.mit.edu')">Scratch</button>
     <button onclick="loadSite('https://archive.org')">Archive.org</button>
@@ -117,3 +193,4 @@
   </script>
 </body>
 </html>
+
