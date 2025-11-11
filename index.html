@@ -1,129 +1,42 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>GalaxyHub</title>
-  <style>
-    body {
-      margin: 0;
-      display: flex;
-      height: 100vh;
-      background-color: #0a0a0a;
-      color: white;
-      font-family: Arial, sans-serif;
-    }
-    .sidebar {
-      width: 200px;
-      background: #111;
-      padding: 20px;
-      display: flex;
-      flex-direction: column;
-    }
-    .sidebar h2 {
-      margin-bottom: 20px;
-      text-align: center;
-      color: #00bfff;
-    }
-    .sidebar button {
-      background: #222;
-      border: none;
-      color: white;
-      padding: 10px;
-      margin-bottom: 10px;
-      cursor: pointer;
-      border-radius: 5px;
-      transition: background 0.3s;
-    }
-    .sidebar button:hover {
-      background: #333;
-    }
-    iframe {
-      flex: 1;
-      border: none;
-      width: 100%;
-      height: 100%;
-    }
-    .topbar {
-      position: fixed;
-      top: 0;
-      left: 200px;
-      right: 0;
-      height: 50px;
-      background: #111;
-      display: flex;
-      align-items: center;
-      padding: 0 10px;
-      box-sizing: border-box;
-      border-bottom: 1px solid #222;
-    }
-    .topbar input {
-      flex: 1;
-      padding: 8px;
-      background: #222;
-      border: none;
-      border-radius: 5px;
-      color: white;
-      outline: none;
-      margin-right: 10px;
-    }
-    .topbar button {
-      background: #00bfff;
-      border: none;
-      padding: 8px 12px;
-      color: white;
-      border-radius: 5px;
-      cursor: pointer;
-    }
-    .content {
-      margin-top: 50px;
-      flex: 1;
-    }
-  </style>
-</head>
-<body>
-  <div class="sidebar">
-    <h2>GalaxyHub</h2>
-    <button onclick="loadSite('https://www.wikipedia.org')">Wikipedia</button>
-    <button onclick="loadSite('https://www.duckduckgo.com')">DuckDuckGo</button>
-    <button onclick="loadSite('https://example.com')">Example</button>
-    <button onclick="loadSite('https://scratch.mit.edu')">Scratch</button>
-    <button onclick="loadSite('https://archive.org')">Archive.org</button>
-  </div>
+import express from "express";
+import fetch from "node-fetch";
+import path from "path";
+import { fileURLToPath } from "url";
 
-  <div class="content">
-    <div class="topbar">
-      <input id="urlInput" type="text" placeholder="Enter a website URL..." />
-      <button onclick="browse()">Go</button>
-    </div>
-    <iframe id="browserFrame" src="about:blank"></iframe>
-  </div>
+const app = express();
+const port = process.env.PORT || 3000;
 
-  <script>
-    const frame = document.getElementById("browserFrame");
-    const input = document.getElementById("urlInput");
+// Needed for __dirname in ES modules
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
-    function formatURL(value) {
-      if (!value.includes(".") && !value.startsWith("http")) {
-        return `https://www.google.com/search?q=${encodeURIComponent(value)}`;
-      } else if (!value.startsWith("http")) {
-        return `https://${value}`;
-      }
-      return value;
-    }
+// Serve static files (like index.html)
+app.use(express.static(__dirname));
 
-    function loadSite(url) {
-      const proxyURL = `/proxy?url=${encodeURIComponent(url)}`;
-      frame.src = proxyURL;
-    }
+// Proxy endpoint
+app.get("/proxy", async (req, res) => {
+  const url = req.query.url;
+  if (!url) return res.status(400).send("Missing URL");
 
-    function browse() {
-      let url = input.value.trim();
-      if (!url) return alert("Please enter a website or search term.");
-      const formatted = formatURL(url);
-      const proxyURL = `/proxy?url=${encodeURIComponent(formatted)}`;
-      frame.src = proxyURL;
-    }
-  </script>
-</body>
-</html>
+  try {
+    const response = await fetch(url, {
+      headers: {
+        "User-Agent":
+          "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36",
+      },
+    });
+
+    const contentType = response.headers.get("content-type");
+    res.set("content-type", contentType);
+    const body = await response.text();
+    res.send(body);
+  } catch (err) {
+    res.status(500).send("Error fetching URL: " + err.message);
+  }
+});
+
+app.listen(port, () => {
+  console.log(`🌌 GalaxyHub Proxy is running on port ${port}`);
+});
+
+
