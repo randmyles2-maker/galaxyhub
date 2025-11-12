@@ -102,11 +102,10 @@
   <script>
     const frame = document.getElementById('browserFrame');
     const input = document.getElementById('urlInput');
-    const proxyBase = 'https://galaxyhub.onrender.com/proxy?url=';
+    const proxyBase = '/proxy?url=';
 
     function formatURL(value) {
       if (!value.includes('.') && !value.startsWith('http')) {
-        // Treat as search term
         return 'https://www.google.com/search?q=' + encodeURIComponent(value);
       } else if (!value.startsWith('http')) {
         return 'https://' + value;
