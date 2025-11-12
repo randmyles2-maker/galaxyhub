@@ -85,17 +85,13 @@
 <body>
   <div class="sidebar">
     <h2>GalaxyHub</h2>
-    <button onclick="loadSite('https://www.wikipedia.org')">Wikipedia</button>
     <button onclick="loadSite('https://www.duckduckgo.com')">DuckDuckGo</button>
-    <button onclick="loadSite('https://example.com')">Example</button>
-    <button onclick="loadSite('https://scratch.mit.edu')">Scratch</button>
-    <button onclick="loadSite('https://archive.org')">Archive.org</button>
   </div>
 
   <div class="content">
     <div class="topbar">
       <input id="urlInput" type="text" placeholder="Enter a website URL..." />
-      <button onclick="browse()">Go</button>
+      <button onclick="browse()">Browse</button>
     </div>
     <iframe id="browserFrame" src="https://www.google.com/webhp?igu=1"></iframe>
   </div>
