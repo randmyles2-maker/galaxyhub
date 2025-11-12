@@ -117,7 +117,7 @@
 
 
     function loadSite(url) {
-      const proxyURL = `/proxy?url=${encodeURIComponent(url)}`;
+      const proxyURL = `https://galaxyhub.onrender.com/proxy?url=${encodeURIComponent(url)}`;
       frame.src = proxyURL;
     }
 
@@ -126,9 +126,10 @@
       let url = input.value.trim();
       if (!url) return alert('Please enter a website or search term.');
       const formatted = formatURL(url);
-      const proxyURL = `/proxy?url=${encodeURIComponent(formatted)}`;
+      const proxyURL = `https://galaxyhub.onrender.com/proxy?url=${encodeURIComponent(formatted)}`;
       frame.src = proxyURL;
     }
   </script>
 </body>
 </html>
+
