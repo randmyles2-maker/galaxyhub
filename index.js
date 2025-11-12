@@ -35,3 +35,4 @@ app.get("/proxy", async (req, res) => {
 });
 
 app.listen(PORT, () => console.log(`🌌 GalaxyHub running on port ${PORT}`));
+
