@@ -96,7 +96,7 @@
       <input id="urlInput" type="text" placeholder="Enter a website URL..." />
       <button onclick="browse()">Go</button>
     </div>
-    <iframe id="browserFrame" src="about:blank"></iframe>
+    <iframe id="browserFrame" src="https://www.wikipedia.org"></iframe>
   </div>
 
   <script>
@@ -113,16 +113,14 @@
     }
 
     function loadSite(url) {
-      const proxyURL = `/proxy?url=${encodeURIComponent(url)}`;
-      frame.src = proxyURL;
+      frame.src = url;
     }
 
     function browse() {
       let url = input.value.trim();
       if (!url) return alert('Please enter a website or search term.');
       const formatted = formatURL(url);
-      const proxyURL = `/proxy?url=${encodeURIComponent(formatted)}`;
-      frame.src = proxyURL;
+      frame.src = formatted;
     }
   </script>
 </body>
