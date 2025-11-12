@@ -96,31 +96,33 @@
       <input id="urlInput" type="text" placeholder="Enter a website URL..." />
       <button onclick="browse()">Go</button>
     </div>
-    <iframe id="browserFrame" src="https://www.google.com/webhp?igu=1"></iframe>
+    <iframe id="browserFrame" src="about:blank"></iframe>
   </div>
 
   <script>
-    const frame = document.getElementById('browserFrame');
-    const input = document.getElementById('urlInput');
+    const frame = document.getElementById("browserFrame");
+    const input = document.getElementById("urlInput");
 
-    function formatURL(inputValue) {
-      if (!inputValue.includes('.') && !inputValue.startsWith('http')) {
-        return `https://www.google.com/search?q=${encodeURIComponent(inputValue)}`;
-      } else if (!inputValue.startsWith('http')) {
-        return `https://${inputValue}`;
+    function formatURL(value) {
+      if (!value.includes(".") && !value.startsWith("http")) {
+        return `https://www.google.com/search?q=${encodeURIComponent(value)}`;
+      } else if (!value.startsWith("http")) {
+        return `https://${value}`;
       }
-      return inputValue;
+      return value;
     }
 
     function loadSite(url) {
-      frame.src = url;
+      const proxyURL = `/proxy?url=${encodeURIComponent(url)}`;
+      frame.src = proxyURL;
     }
 
     function browse() {
       let url = input.value.trim();
-      if (!url) return alert('Please enter a website or search term.');
+      if (!url) return alert("Please enter a website or search term.");
       const formatted = formatURL(url);
-      frame.src = formatted;
+      const proxyURL = `/proxy?url=${encodeURIComponent(formatted)}`;
+      frame.src = proxyURL;
     }
   </script>
 </body>
