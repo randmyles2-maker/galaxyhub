@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -85,39 +84,45 @@
 <body>
   <div class="sidebar">
     <h2>GalaxyHub</h2>
-    <button onclick="loadSite('https://www.duckduckgo.com')">DuckDuckGo</button>
+    <button onclick="loadSite('https://www.wikipedia.org')">Wikipedia</button>
+    <button onclick="loadSite('https://archive.org')">Archive.org</button>
+    <button onclick="loadSite('https://scratch.mit.edu')">Scratch</button>
+    <button onclick="loadSite('https://example.com')">Example</button>
+    <button onclick="loadSite('https://duckduckgo.com')">DuckDuckGo</button>
   </div>
 
   <div class="content">
     <div class="topbar">
       <input id="urlInput" type="text" placeholder="Enter a website URL..." />
-      <button onclick="browse()">Browse</button>
+      <button onclick="browse()">Go</button>
     </div>
-    <iframe id="browserFrame" src="https://www.google.com/webhp?igu=1"></iframe>
+    <iframe id="browserFrame" src="https://www.wikipedia.org"></iframe>
   </div>
 
   <script>
     const frame = document.getElementById('browserFrame');
     const input = document.getElementById('urlInput');
 
-    function formatURL(inputValue) {
-      if (!inputValue.includes('.') && !inputValue.startsWith('http')) {
-        return `https://www.google.com/search?q=${encodeURIComponent(inputValue)}`;
-      } else if (!inputValue.startsWith('http')) {
-        return `https://${inputValue}`;
-      }
-      return inputValue;
-    }
-
+    // Try to load a site in iframe, or open it in new tab if blocked
     function loadSite(url) {
-      frame.src = url;
+      try {
+        frame.src = url;
+        setTimeout(() => {
+          const blocked = frame.contentWindow.location.href === "about:blank";
+          if (blocked) window.open(url, "_blank");
+        }, 1000);
+      } catch {
+        window.open(url, "_blank");
+      }
     }
 
     function browse() {
       let url = input.value.trim();
       if (!url) return alert('Please enter a website or search term.');
-      const formatted = formatURL(url);
-      frame.src = formatted;
+      if (!url.startsWith('http')) {
+        url = 'https://' + url;
+      }
+      loadSite(url);
     }
   </script>
 </body>
