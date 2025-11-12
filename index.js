@@ -1,25 +1,20 @@
 import express from "express";
-import fetch from "node-fetch";
-import cors from "cors";
+import path from "path";
+import { fileURLToPath } from "url";
+
 
 const app = express();
-const PORT = process.env.PORT || 3000;
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
-// Allow your frontend domain to connect
-app.use(cors());
-app.use(express.static("public"));
 
-// Proxy route
-app.get("/proxy", async (req, res) => {
-  const target = req.query.url;
-  if (!target) return res.status(400).send("Missing ?url=");
-  try {
-    const response = await fetch(target);
-    const body = await response.text();
-    res.send(body);
-  } catch (err) {
-    res.status(500).send("Error fetching: " + err.message);
-  }
+app.use(express.static(__dirname));
+
+
+app.get("/", (req, res) => {
+  res.sendFile(path.join(__dirname, "index.html"));
 });
 
-app.listen(PORT, () => console.log(`🌌 GalaxyHub Proxy is running on port ${PORT}`));
+
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => console.log(`🌌 GalaxyHub is running on port ${PORT}`));
