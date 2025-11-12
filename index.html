@@ -85,7 +85,7 @@
   <div class="sidebar">
     <h2>GalaxyHub</h2>
     <button onclick="loadSite('https://www.wikipedia.org')">Wikipedia</button>
-    <button onclick="loadSite('https://www.duckduckgo.com')">DuckDuckGo</button>
+    <button onclick="loadSite('https://duckduckgo.com')">DuckDuckGo</button>
     <button onclick="loadSite('https://example.com')">Example</button>
     <button onclick="loadSite('https://scratch.mit.edu')">Scratch</button>
     <button onclick="loadSite('https://archive.org')">Archive.org</button>
@@ -102,25 +102,27 @@
   <script>
     const frame = document.getElementById('browserFrame');
     const input = document.getElementById('urlInput');
+    const proxyBase = 'https://galaxyhub.onrender.com/proxy?url=';
 
-    function formatURL(inputValue) {
-      if (!inputValue.includes('.') && !inputValue.startsWith('http')) {
-        return `https://www.google.com/search?q=${encodeURIComponent(inputValue)}`;
-      } else if (!inputValue.startsWith('http')) {
-        return `https://${inputValue}`;
+    function formatURL(value) {
+      if (!value.includes('.') && !value.startsWith('http')) {
+        // Treat as search term
+        return 'https://www.google.com/search?q=' + encodeURIComponent(value);
+      } else if (!value.startsWith('http')) {
+        return 'https://' + value;
       }
-      return inputValue;
+      return value;
     }
 
     function loadSite(url) {
-      frame.src = url;
+      frame.src = proxyBase + encodeURIComponent(url);
     }
 
     function browse() {
-      let url = input.value.trim();
-      if (!url) return alert('Please enter a website or search term.');
-      const formatted = formatURL(url);
-      frame.src = formatted;
+      let value = input.value.trim();
+      if (!value) return alert('Please enter a website or search term.');
+      const formatted = formatURL(value);
+      frame.src = proxyBase + encodeURIComponent(formatted);
     }
   </script>
 </body>
