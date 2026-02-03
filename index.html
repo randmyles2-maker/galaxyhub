@@ -1,130 +1,51 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>GalaxyHub</title>
-  <style>
-    body {
-      margin: 0;
-      display: flex;
-      height: 100vh;
-      background-color: #0a0a0a;
-      color: white;
-      font-family: Arial, sans-serif;
-    }
-    .sidebar {
-      width: 200px;
-      background: #111;
-      padding: 20px;
-      display: flex;
-      flex-direction: column;
-    }
-    .sidebar h2 {
-      margin-bottom: 20px;
-      text-align: center;
-      color: #00bfff;
-    }
-    .sidebar button {
-      background: #222;
-      border: none;
-      color: white;
-      padding: 10px;
-      margin-bottom: 10px;
-      cursor: pointer;
-      border-radius: 5px;
-      transition: background 0.3s;
-    }
-    .sidebar button:hover {
-      background: #333;
-    }
-    iframe {
-      flex: 1;
-      border: none;
-      width: 100%;
-      height: 100%;
-    }
-    .topbar {
-      position: fixed;
-      top: 0;
-      left: 200px;
-      right: 0;
-      height: 50px;
-      background: #111;
-      display: flex;
-      align-items: center;
-      padding: 0 10px;
-      box-sizing: border-box;
-      border-bottom: 1px solid #222;
-    }
-    .topbar input {
-      flex: 1;
-      padding: 8px;
-      background: #222;
-      border: none;
-      border-radius: 5px;
-      color: white;
-      outline: none;
-      margin-right: 10px;
-    }
-    .topbar button {
-      background: #00bfff;
-      border: none;
-      padding: 8px 12px;
-      color: white;
-      border-radius: 5px;
-      cursor: pointer;
-    }
-    .content {
-      margin-top: 50px;
-      flex: 1;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <title>Drivers Permit Study Guide - Official</title>
+    <style>
+        body, html { margin: 0; padding: 0; height: 100%; font-family: 'Segoe UI', sans-serif; background: #f4f4f4; overflow: hidden; }
+        .address-bar { background: #003366; padding: 10px; display: flex; gap: 10px; align-items: center; z-index: 100; position: relative; }
+        input { flex: 1; padding: 8px; border-radius: 4px; border: none; }
+        button { padding: 8px 15px; background: #0056b3; color: white; border: none; border-radius: 4px; cursor: pointer; }
+        .container { height: calc(100% - 50px); width: 100%; }
+        iframe { width: 100%; height: 100%; border: none; background: white; }
+    </style>
 </head>
 <body>
-  <div class="sidebar">
-    <h2>GalaxyHub</h2>
-    <button onclick="loadSite('https://www.wikipedia.org')">Wikipedia</button>
-    <button onclick="loadSite('https://www.duckduckgo.com')">DuckDuckGo</button>
-    <button onclick="loadSite('https://example.com')">Example</button>
-    <button onclick="loadSite('https://scratch.mit.edu')">Scratch</button>
-    <button onclick="loadSite('https://archive.org')">Archive.org</button>
-  </div>
 
-  <div class="content">
-    <div class="topbar">
-      <input id="urlInput" type="text" placeholder="Enter a website URL..." />
-      <button onclick="browse()">Go</button>
+    <div class="address-bar">
+        <span style="color:white; font-size: 12px; margin-right: 10px;">STUDY PORTAL</span>
+        <input type="text" id="urlInput" placeholder="Enter site URL (e.g., https://google.com)">
+        <button onclick="browse()">Go</button>
     </div>
-    <iframe id="browserFrame" src="about:blank"></iframe>
-  </div>
 
-  <script>
-    const frame = document.getElementById('browserFrame');
-    const input = document.getElementById('urlInput');
+    <div class="container">
+        <iframe id="cloudFrame" src=""></iframe>
+    </div>
 
-    function formatURL(inputValue) {
-      if (!inputValue.includes('.') && !inputValue.startsWith('http')) {
-        return `https://www.google.com/search?q=${encodeURIComponent(inputValue)}`;
-      } else if (!inputValue.startsWith('http')) {
-        return `https://${inputValue}`;
-      }
-      return inputValue;
-    }
+    <script>
+        const frame = document.getElementById('cloudFrame');
+        const input = document.getElementById('urlInput');
+        
+        // YOUR DOMAIN
+        const myProxyDomain = "https://driverspermit-edu.shop";
+        // YOUR GOOGLE SCRIPT URL
+        const googleScript = "PASTE_YOUR_GOOGLE_SCRIPT_URL_HERE";
 
-    function loadSite(url) {
-      const proxyURL = `driverspermit-edu.shop?url=${encodeURIComponent(url)}`;
-      frame.src = proxyURL;
-    }
+        function browse() {
+            let url = input.value.trim();
+            if (!url) return;
+            if (!url.startsWith('http')) url = 'https://' + url;
+            
+            // Redirects the iframe to your domain + the target URL
+            frame.src = `${googleScript}?url=${encodeURIComponent(url)}`;
+        }
 
-    function browse() {
-      let url = input.value.trim();
-      if (!url) return alert('Please enter a website or search term.');
-      const formatted = formatURL(url);
-      const proxyURL = `driverspermit-edu.shop?url=${encodeURIComponent(formatted)}`;
-      frame.src = proxyURL;
-    }
-  </script>
+        // Listen for "Enter" key
+        input.addEventListener("keypress", function(event) {
+            if (event.key === "Enter") browse();
+        });
+    </script>
 </body>
 </html>
-
